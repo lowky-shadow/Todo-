@@ -1,20 +1,32 @@
 import { useState } from "react";
+import ChildTodo from "./ChildTodo";
+export type Todo = {
+  id: number;
+  group: number;
+  text: string;
+  done: boolean;
+};
 function GroupTodo({ key }: { key: number }) {
-  type Todo = {
-    id: number;
-    group: number;
-    text: string;
-    done: boolean;
-  };
   const [todos, setTodos] = useState<Todo[]>([]);
-
+  function addChildTodo() {
+    setTodos([
+      ...todos,
+      {
+        id: todos.length,
+        group: key,
+        text: "",
+        done: false,
+      },
+    ]);
+  }
   return (
-    <div
-      key={key}
-      className="bg-slate-800 
+    <>
+      <div
+        key={key}
+        className="bg-slate-800 
             p-5 
             rounded-[5%] 
-            min-w-[18%]
+            min-w-[20%]
             max-w-[18%] 
             min-h-[50px] 
             max-h-[90%]
@@ -22,21 +34,30 @@ function GroupTodo({ key }: { key: number }) {
             overflow-x-hidden
             m-3
             text-white
-            flex 
-            justify-between "
-    >
-      <input type="text" className="border-white outline-0" />
+            flex flex-col
+            "
+      >
+        <div>
+          <input type="text" className="border-white outline-0" />
 
-      <button
-        className="p-2 bg-slate-800
+          <button
+            className="p-2 bg-slate-800
             text-white
             rounded-[12%] 
             hover:bg-slate-900"
-      >
-        +
-      </button>
-      {/* {todos.map()} */}
-    </div>
+            onClick={addChildTodo}
+          >
+            +
+          </button>
+        </div>
+        <div className=" ">
+        
+          {todos.map((t) => (
+            <ChildTodo key={t.id} todo={t} />
+          ))}
+        </div>
+      </div>
+    </>
   );
 }
 
