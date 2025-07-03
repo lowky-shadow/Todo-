@@ -1,20 +1,39 @@
+import {  useState } from "react";
 import type { Todo } from "./GroupTodo";
-interface ChildTodoProps{
-    key:number,
-    todo:Todo 
+interface ChildTodoProps {
+  todo: Todo;
+  onTextChange: (id: number, text: string) => void;
+  deleteTodo: (id: number) => void;
 }
+function ChildTodo({ todo, onTextChange, deleteTodo }: ChildTodoProps) {
+  const [todoText, setTodoText] = useState("");
 
-function ChildTodo({key,todo}:ChildTodoProps){
-    return(
-        <div
-        className=" flex gap-x-5 gap-y-5">
-        
-            <input type="text" className="border-white outline-0  bg-slate-700 m-2 p-3 rounded"  />
-            <button>X</button>
-        
-         </div>
-        
-    );
+  const handleChange = (e:any) => {
+    const newText = e.target.value;
+    setTodoText(newText);
+    onTextChange(todo.id, newText);
+  };
+
+  function deleteTheTodo() {
+    deleteTodo(todo.id);
+  }
+
+  return (
+    <div className=" flex justify-between ">
+      <input
+        type="text"
+        className=" outline-0  bg-slate-700 m-2 p-2 rounded"
+        value={todoText}
+        onChange={handleChange}
+      />
+      <button
+        className="hover:bg-red-400 rounded pl-2 pr-2 "
+        onClick={deleteTheTodo}
+      >
+        🗑️
+      </button>
+    </div>
+  );
 }
 
 export default ChildTodo;
