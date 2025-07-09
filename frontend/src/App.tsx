@@ -1,33 +1,90 @@
 import "./App.css";
-import GroupTodo from "@/components/GroupTodo";
-import AddButton from "@/components/AddButton";
+import GroupTodo from "@components/GroupTodo";
+import AddButton from "@components/AddButton";
 import { useState } from "react";
 
+export interface Todo {
+  id: number;
+  groupId: number;
+  text: string;
+  done: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
+export interface Group {
+  id: number;
+  title: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 function App() {
-  const [groups,setgroups] = useState([0]);//array of index of group
-  const [nextGrouptId,setNextGrouptId] = useState(1);
+  const [groups, setGroups] = useState<Group[]>([]); //array of groups
+  const [todos, setTodos] = useState<Todo[]>([]);
+  const [nextGrouptId, setNextGrouptId] = useState(1);
+  const [nextTodoId, setNextTodoId] = useState(1);
+
+  function getTodosForGroup(groupId:number){
+    return todos.filter((t)=>t.groupId ===groupId);
+  }
+
+  function addTodoToGroup(groupId:number,text:string){
+    const newTodo = {
+      id:nextTodoId,
+      groupId,
+      text,
+      done:false,
+      createdAt:new Date(),
+      updatedAt:new Date()
+    }
+    setTodos([...todos,newTodo]);
+    setNextTodoId(nextTodoId +1);
+  }
+
+  function updateTodo(todoId:number,updates:Partial<Todo>){
+    setTodos(todos.map((t)=>t.id ===todoId ?{...t,...updates,updateTodo:new Date()}:t));
+  }
+
+  function deleteTodo(todoId:number){
+    setTodos(todos.filter((t)=>t.id !== todoId));
+  }
+
+  function deleteGroup(groupId:number){
+    setGroups(groups.filter((g)=> g.id !==groupId));
+    setTodos(todos.filter((t)=>t.groupId !==groupId));
+  }
 
   function addGroup(){
-    setgroups([...groups,nextGrouptId]);
+    const newGroup={
+      id:nextGrouptId,
+      title:"",
+      createdAt:new Date(),
+      updatedAt:new Date()
+    }
+    setGroups([...groups,newGroup]);
     setNextGrouptId(nextGrouptId+1);
   }
-  function deleteGroup(id:number){
-    setgroups(groups.filter((t)=>t !==id));
-  }
   
-  return(
-    <div className="bg-slate-900 w-full min-h-screen">
 
+  return (
+    <div className="bg-slate-900 w-full min-h-screen">
       <nav className="w-full bg-slate-800 p-4 ">
         <AddButton onClick={addGroup} />
       </nav>
 
-    <div className="flex flex-row p-5 bg-slate-900 w-full min-h-[100%] flex-wrap">
-      {groups.map((id)=>(
-        <GroupTodo key={id} id={id} onDelete={()=> deleteGroup(id)}/>
-      ))}
-      
-    
+      <div className="flex flex-row p-5 bg-slate-900 w-full min-h-[100%] flex-wrap">
+        {groups.map((group) => (
+          <GroupTodo 
+          key={group.id} 
+          group={group}
+          todos={getTodosForGroup(group.id)} 
+          onAddTodo={(text:any) => addTodoToGroup(group.id, text)}
+          onUpdateTodo={updateTodo}
+          onDeleteTodo={deleteTodo}
+          onDeleteGroup={() => deleteGroup(group.id)}
+           />
+
+        ))}
       </div>
     </div>
   );

@@ -1,8 +1,4 @@
-type AddButtonProps = {
-  onClick: () => void;
-  children?: React.ReactNode; // only if you're passing children
-};
-function AddButon({onClick}:AddButtonProps){
+function AddButon({onClick}:{onClick :()=>void}){
     return(
         <>
             <button

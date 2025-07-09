@@ -1,5 +1,5 @@
 import {  useState } from "react";
-import type { Todo } from "./GroupTodo";
+import type { Todo } from "@/App";
 interface ChildTodoProps {
   todo: Todo;
   onTextChange: (id: number, text: string) => void;
@@ -14,10 +14,6 @@ function ChildTodo({ todo, onTextChange, deleteTodo }: ChildTodoProps) {
     onTextChange(todo.id, newText);
   };
 
-  function deleteTheTodo() {
-    deleteTodo(todo.id);
-  }
-
   return (
     <div className=" flex justify-between ">
       <input
@@ -28,7 +24,7 @@ function ChildTodo({ todo, onTextChange, deleteTodo }: ChildTodoProps) {
       />
       <button
         className="hover:bg-red-400 rounded pl-2 pr-2 "
-        onClick={deleteTheTodo}
+        onClick={()=>deleteTodo(todo.id)}
       >
         🗑️
       </button>
