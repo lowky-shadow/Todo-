@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ChildTodo from "@components/ChildTodo";
 import type { Group, Todo } from "@/App";
+import useDebounce from "@/hooks/useDebounce";
 
 interface GroupTodoProps{
   group:Group;
@@ -9,11 +10,31 @@ interface GroupTodoProps{
   onUpdateTodo:(todoId: number, updates: Partial<Todo>)=>void;
   onDeleteTodo:(todoId:number)=>void;
   onDeleteGroup:()=>void;
+  onUpdateGroup: (updates: Partial<Group>) => void;
 }
 
-function GroupTodo({ group,todos,onAddTodo,onUpdateTodo,onDeleteTodo,onDeleteGroup }:GroupTodoProps) {
+function GroupTodo({ group,todos,onAddTodo,onUpdateTodo,onDeleteTodo,onDeleteGroup,onUpdateGroup }:GroupTodoProps) {
   
-  const [groupTitle,setGroupTitle] = useState("");
+  // Local state for immediate UI updates
+  const [localTitle, setLocalTitle] = useState(group.title);
+  
+  // Debounced function that updates the parent after user stops typing
+  const debouncedUpdate = useDebounce((title: string) => {
+    onUpdateGroup({ title });
+  }, 500); 
+
+  // Sync local state when parent state changes
+  // (This happens when a new group is created or loaded from storage)
+  useEffect(() => {
+    setLocalTitle(group.title);
+  }, [group.title]);
+
+  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newTitle = e.target.value;
+    setLocalTitle(newTitle);
+    // Schedule a debounced update to parent
+    debouncedUpdate(newTitle);
+  };
 
   function addChildTodo(){
     onAddTodo("");
@@ -37,8 +58,8 @@ function GroupTodo({ group,todos,onAddTodo,onUpdateTodo,onDeleteTodo,onDeleteGro
             "
       >
         <div className="flex justify-between">
-          <input type="text" className="outline-0 p-2 m-2" value={groupTitle}
-           onChange={(e) => setGroupTitle(e.target.value)}
+          <input type="text" className="outline-0 p-2 m-2" value={localTitle}
+           onChange={handleTitleChange}
           placeholder="Group Title"/>
 
           <button

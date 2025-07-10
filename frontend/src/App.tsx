@@ -65,6 +65,9 @@ function App() {
     setNextGroupId(nextGroupId+1);
   }
   
+   function updateGroup(groupId:number, updates:Partial<Group>){
+    setGroups(groups.map((g)=> g.id === groupId ? {...g, ...updates, updatedAt: new Date()} : g));
+  }
 
   return (
     <div className="bg-slate-900 w-full min-h-screen">
@@ -82,6 +85,7 @@ function App() {
           onUpdateTodo={updateTodo}
           onDeleteTodo={deleteTodo}
           onDeleteGroup={() => deleteGroup(group.id)}
+          onUpdateGroup={(updates) => updateGroup(group.id, updates)}
            />
 
         ))}
