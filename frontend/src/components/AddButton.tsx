@@ -1,4 +1,4 @@
-function AddButon({onClick}:{onClick :()=>void}){
+function AddButton({onClick}:{onClick :()=>void}){
     return(
         <>
             <button
@@ -12,4 +12,4 @@ function AddButon({onClick}:{onClick :()=>void}){
     );
 }
 
-export default AddButon;
+export default AddButton;

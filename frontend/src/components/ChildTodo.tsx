@@ -6,7 +6,7 @@ interface ChildTodoProps {
   deleteTodo: (id: number) => void;
 }
 function ChildTodo({ todo, onTextChange, deleteTodo }: ChildTodoProps) {
-  const [todoText, setTodoText] = useState("");
+  const [todoText, setTodoText] = useState(todo.text);
 
   const handleChange = (e:any) => {
     const newText = e.target.value;

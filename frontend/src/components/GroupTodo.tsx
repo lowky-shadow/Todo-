@@ -16,7 +16,7 @@ function GroupTodo({ group,todos,onAddTodo,onUpdateTodo,onDeleteTodo,onDeleteGro
   const [groupTitle,setGroupTitle] = useState("");
 
   function addChildTodo(){
-    onAddTodo(group.id);
+    onAddTodo("");
   }
   return (
     <>
@@ -56,7 +56,7 @@ function GroupTodo({ group,todos,onAddTodo,onUpdateTodo,onDeleteTodo,onDeleteGro
 
         <div >
           {todos.map((t) => (
-            <ChildTodo key={t.id} todo={t} onTextChange={()=>onUpdateTodo} deleteTodo={onDeleteTodo} />
+            <ChildTodo key={t.id} todo={t} onTextChange={(id, text) => onUpdateTodo(id, { text })} deleteTodo={onDeleteTodo} />
           ))}
         </div>
       </div>

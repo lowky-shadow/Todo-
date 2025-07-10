@@ -21,7 +21,7 @@ export interface Group {
 function App() {
   const [groups, setGroups] = useState<Group[]>([]); //array of groups
   const [todos, setTodos] = useState<Todo[]>([]);
-  const [nextGrouptId, setNextGrouptId] = useState(1);
+  const [nextGroupId, setNextGroupId] = useState(1);
   const [nextTodoId, setNextTodoId] = useState(1);
 
   function getTodosForGroup(groupId:number){
@@ -42,7 +42,7 @@ function App() {
   }
 
   function updateTodo(todoId:number,updates:Partial<Todo>){
-    setTodos(todos.map((t)=>t.id ===todoId ?{...t,...updates,updateTodo:new Date()}:t));
+    setTodos(todos.map((t)=>t.id ===todoId ?{...t,...updates,updatedAt:new Date()}:t));
   }
 
   function deleteTodo(todoId:number){
@@ -56,13 +56,13 @@ function App() {
 
   function addGroup(){
     const newGroup={
-      id:nextGrouptId,
+      id:nextGroupId,
       title:"",
       createdAt:new Date(),
       updatedAt:new Date()
     }
     setGroups([...groups,newGroup]);
-    setNextGrouptId(nextGrouptId+1);
+    setNextGroupId(nextGroupId+1);
   }
   
 
@@ -78,7 +78,7 @@ function App() {
           key={group.id} 
           group={group}
           todos={getTodosForGroup(group.id)} 
-          onAddTodo={(text:any) => addTodoToGroup(group.id, text)}
+          onAddTodo={(text:string) => addTodoToGroup(group.id, text)}
           onUpdateTodo={updateTodo}
           onDeleteTodo={deleteTodo}
           onDeleteGroup={() => deleteGroup(group.id)}
